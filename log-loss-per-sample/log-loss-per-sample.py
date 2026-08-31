@@ -1,17 +1,11 @@
-import numpy as np
+import math
 
-def log_loss(y_true, y_pred, eps=1e-15):
+def log_loss(y_true: list, y_pred: list, eps: float = 1e-15) -> list:
     """
-    Compute per-sample binary cross-entropy (log loss).
+    Returns a list of loss values.
     """
     # Write code here
-    y_true = np.asarray(y_true)
-    y_pred = np.asarray(y_pred)
-
-    # Clip predictions to prevent log(0) undefined errors
-    p_prime = np.clip(y_pred, eps, 1 - eps)
-
-    # Fully vectorized binary cross-entropy formula
-    loss = -(y_true * np.log(p_prime) + (1 - y_true) * np.log(1 - p_prime))
-
-    return loss.tolist()
+    p_hat = [min(1 - eps, max(eps, pred)) for pred in y_pred]
+    loss = [- (1 - y_t) * math.log(1 - p_h) - y_t * math.log(p_h) for y_t, p_h in zip(y_true, p_hat)]
+    rounded_loss = [round(l, 6) for l in loss]
+    return rounded_loss
